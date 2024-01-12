@@ -32,6 +32,26 @@ router.post("/teachers", (req, res) => {
   res.status(201).json(teacher);
 });
 
+router.put("/teachers/:teacherId", (req, res) => {
+  const { teacherId } = req.params;
+  const teacher = teachers.find((teacher) => teacher.id === teacherId);
+
+  if (!teacher) {
+    return res.status(404).json({ message: `Teacher not found` });
+  } else {
+    const updatedTeacher = {
+      id: teacherId,
+      ...req.body,
+    };
+
+    teachers = teachers.map((teacher) =>
+      teacher.id === teacherId ? updatedTeacher : teacher
+    );
+
+    res.status(200).json(updatedTeacher);
+  }
+});
+
 router.patch("/teachers/:teacherId", (req, res) => {
   const { teacherId } = req.params;
 
