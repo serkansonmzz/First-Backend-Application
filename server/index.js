@@ -1,12 +1,16 @@
 import express from "express";
-import router from "./router/expressRouter.js";
+import routes from "./routes/index.js";
 const PORT = 8080;
 
 const app = express();
 
 app.use(express.json());
-app.use("/", router);
+app.use(routes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Home Page");
 });
