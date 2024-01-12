@@ -29,10 +29,16 @@ The RESTful API exposes the following endpoints:
 -GET /students
 
 - Returns a list of all students.
+- You can filter the results by adding query parameters `filter` and `value`.
+- For example: `GET /students?filter=[KEY]&value=[VALUE]` where `[KEY]` is the field you want to filter by and `[VALUE]` is the value you're looking for.
+- Example: `GET /students?filter=firstname&value=peter` would return all students in containing the value
 
 -GET /teachers
 
 - Returns a list of all teachers.
+- You can filter the results by adding query parameters `filter` and `value`.
+- For example: `GET /teachers?filter=[KEY]&value=[VALUE]` where `[KEY]` is the field you want to filter by and `[VALUE]` is the value you're looking for.
+- Example: `GET /teachers?filter=firstname&value=al..` would return all teachers in containing the value
 
 -GET /students/:id
 
