@@ -58,6 +58,14 @@ The RESTful API exposes the following endpoints:
 
 - Updates an existing teacher.
 
+-PATCH /students/:id
+
+- Updates students' specific attributes
+
+-PATCH /teachers/:id
+
+- Updates teachers' specific attributes
+
 -DELETE /students/:id
 
 - Deletes a student by ID.
