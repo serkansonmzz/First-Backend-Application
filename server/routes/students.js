@@ -1,12 +1,34 @@
 import { Router } from "express";
+import { createStudents } from "../utils/constants.js";
+import {
+  validateRequestParams,
+  validateQueryParams,
+  validatePostRequestParams,
+  validatePostParams,
+} from "../utils/middleware.js";
+import { matchedData } from "express-validator";
 import { faker } from "@faker-js/faker";
 
 const router = Router();
-let students = [];
+let students = createStudents(10);
 
-router.get("/students", (req, res) => {
-  res.status(200).json(students);
-});
+router.get(
+  "/students",
+  validateRequestParams,
+  validateQueryParams,
+  (request, response) => {
+    const {
+      query: { filter, value },
+    } = request;
+    if (filter && value) {
+      return response.send(
+        students.filter((student) => student[filter].includes(value))
+      );
+    }
+
+    response.status(200).json(students);
+  }
+);
 
 router.get("/students/:studentId", (req, res) => {
   const { studentId } = req.params;
@@ -18,19 +40,22 @@ router.get("/students/:studentId", (req, res) => {
   }
 });
 
-router.post("/students", (req, res) => {
-  const student = {
-    id: faker.string.uuid(),
-    firstname: faker.person.firstName(),
-    lastname: faker.person.lastName(),
-    sex: faker.person.sexType(),
-    email: faker.internet.email(),
-    telephone: faker.phone.number(),
-    grade: faker.number.int({ min: 30, max: 100 }),
-  };
-  students.push(student);
-  res.status(201).json(student);
-});
+router.post(
+  "/students",
+  validatePostRequestParams,
+  validatePostParams,
+  (request, res) => {
+    // const student = createStudents(1)[0];
+    const data = matchedData(request);
+    const student = {
+      id: faker.string.uuid(),
+      ...data,
+    };
+
+    students.push(student);
+    res.status(201).json(student);
+  }
+);
 
 router.put("/students/:studentId", (req, res) => {
   const { studentId } = req.params;
