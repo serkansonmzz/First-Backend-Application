@@ -13,6 +13,26 @@ router.get("/teachers", (req, res) => {
   res.status(200).json(teachers);
 });
 
+router.get("/teachers/:teacherId", (req, res) => {
+  const { teacherId } = req.params;
+  const teacher = teachers.find((teacher) => teacher.id === teacherId);
+  if (!teacher) {
+    return res.status(404).json({ message: `Teacher not found` });
+  } else {
+    res.status(200).json(teacher);
+  }
+});
+
+router.get("/students/:studentId", (req, res) => {
+  const { studentId } = req.params;
+  const student = teachers.find((student) => student.id === studentId);
+  if (!student) {
+    return res.status(404).json({ message: `Student not found` });
+  } else {
+    res.status(200).json(student);
+  }
+});
+
 router.get("/students", (req, res) => {
   res.status(200).json(students);
 });
