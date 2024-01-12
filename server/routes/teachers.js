@@ -1,12 +1,34 @@
 import { Router } from "express";
+import { createTeachers } from "../utils/constants.js";
+import {
+  validateRequestParams,
+  validateQueryParams,
+  validatePostRequestParams,
+  validatePostParams,
+} from "../utils/middleware.js";
+import { matchedData } from "express-validator";
 import { faker } from "@faker-js/faker";
 
 const router = Router();
-let teachers = [];
+let teachers = createTeachers(10);
 
-router.get("/teachers", (req, res) => {
-  res.status(200).json(teachers);
-});
+router.get(
+  "/teachers",
+  validateRequestParams,
+  validateQueryParams,
+  (request, response) => {
+    const {
+      query: { filter, value },
+    } = request;
+    if (filter && value) {
+      return response.send(
+        teachers.filter((teacher) => teacher[filter].includes(value))
+      );
+    }
+
+    response.status(200).json(teachers);
+  }
+);
 
 router.get("/teachers/:teacherId", (req, res) => {
   const { teacherId } = req.params;
@@ -18,19 +40,22 @@ router.get("/teachers/:teacherId", (req, res) => {
   }
 });
 
-router.post("/teachers", (req, res) => {
-  const teacher = {
-    id: faker.string.uuid(),
-    firstname: faker.person.firstName(),
-    lastname: faker.person.lastName(),
-    sex: faker.person.sexType(),
-    email: faker.internet.email(),
-    telephone: faker.phone.number(),
-    adress: faker.location.streetAddress(),
-  };
-  teachers.push(teacher);
-  res.status(201).json(teacher);
-});
+router.post(
+  "/teachers",
+  validatePostRequestParams,
+  validatePostParams,
+  (request, res) => {
+    // const teacher = createTeachers(1)[0];
+    const data = matchedData(request);
+    const teacher = {
+      id: faker.string.uuid(),
+      ...data,
+    };
+
+    teachers.push(teacher);
+    res.status(201).json(teacher);
+  }
+);
 
 router.put("/teachers/:teacherId", (req, res) => {
   const { teacherId } = req.params;
